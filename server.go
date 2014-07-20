@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"net"
 )
 
 type Config struct {
@@ -17,4 +19,25 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
+	conn, err := net.Dial("unix", "/tmp/haproxy")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	conn.Write([]byte("show info\n"))
+
+	reader := bufio.NewReader(conn)
+
+	for {
+		status, err := reader.ReadString('\n')
+
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		fmt.Println(status)
+	}
+
 }
