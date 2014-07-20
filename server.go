@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"github.com/BurntSushi/toml"
 	"net"
+	"reflect"
+	"strconv"
+	"strings"
 )
 
 type Config struct {
@@ -31,6 +34,10 @@ func main() {
 
 	reader := bufio.NewReader(conn)
 
+	server := new(HaproxyServer)
+
+	val := reflect.ValueOf(server).Elem()
+
 	for {
 		status, err := reader.ReadString('\n')
 
@@ -38,7 +45,41 @@ func main() {
 			fmt.Println(err)
 			break
 		}
-		fmt.Println(status)
+
+		parts := strings.Split(status, ":")
+
+		key := parts[0]
+		value := ""
+
+		if strings.TrimSpace(key) == "" {
+			continue
+		}
+
+		if len(parts) == 2 {
+			value = strings.TrimSpace(parts[1])
+		}
+
+		for i := 0; i < val.NumField(); i++ {
+			valueField := val.Field(i)
+			typeField := val.Type().Field(i)
+			tag := typeField.Tag
+
+			if tag.Get("haproxy") == key {
+
+				if valueField.Kind() == reflect.String {
+					valueField.SetString(value)
+				}
+
+				if valueField.Kind() == reflect.Int {
+					i, _ := strconv.Atoi(value)
+					valueField.SetInt(int64(i))
+				}
+			}
+		}
+
+		//fmt.Println(key, ":", value)
 	}
+
+	fmt.Println(server)
 
 }
