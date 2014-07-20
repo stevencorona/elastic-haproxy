@@ -1,0 +1,3 @@
+EnableStatsd = true
+EnableAutoscale = true
+EnableRoute53 = true
