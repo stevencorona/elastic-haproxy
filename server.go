@@ -11,6 +11,7 @@ type Config struct {
 	EnableStad       bool
 	EnableAutosclale bool
 	EnableRoute53    bool
+	HaproxySocket    string
 }
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 		return
 	}
 
-	conn, err := net.Dial("unix", "/tmp/haproxy")
+	conn, err := net.Dial("unix", conf.HaproxySocket)
 
 	if err != nil {
 		fmt.Println(err)
