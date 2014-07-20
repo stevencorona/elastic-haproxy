@@ -1,3 +1,4 @@
 EnableStatsd = true
 EnableAutoscale = true
 EnableRoute53 = true
+HaproxySocket = "/tmp/haproxy.sock"
