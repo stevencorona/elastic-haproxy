@@ -1,6 +1,15 @@
 package main
 
-type HaproxyServer struct {
+import (
+	"bufio"
+	"fmt"
+	"net"
+	"reflect"
+	"strconv"
+	"strings"
+)
+
+type HaproxyServerInfo struct {
 	Name                       string `haproxy:"Name""`
 	Version                    string `haproxy:"Version"`
 	ReleaseDate                string `haproxy:"Release_date"`
@@ -49,4 +58,60 @@ type HaproxyServer struct {
 	IdlePct                    int    `haproxy:"Idle_pct"`
 	Node                       string `haproxy:"node"`
 	Description                string `haproxy:"description"`
+}
+
+func (h *Haproxy) GetInfo() {
+	conn, err := net.Dial("unix", h.Socket)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	conn.Write([]byte("show info\n"))
+
+	reader := bufio.NewReader(conn)
+
+	h.ServerInfo = new(HaproxyServerInfo)
+
+	val := reflect.ValueOf(h.ServerInfo).Elem()
+
+	for {
+		status, err := reader.ReadString('\n')
+
+		if err != nil {
+			//fmt.Println(err)
+			break
+		}
+
+		parts := strings.Split(status, ":")
+
+		key := parts[0]
+		value := ""
+
+		if strings.TrimSpace(key) == "" {
+			continue
+		}
+
+		if len(parts) == 2 {
+			value = strings.TrimSpace(parts[1])
+		}
+
+		for i := 0; i < val.NumField(); i++ {
+			valueField := val.Field(i)
+			typeField := val.Type().Field(i)
+			tag := typeField.Tag
+
+			if tag.Get("haproxy") == key {
+
+				if valueField.Kind() == reflect.String {
+					valueField.SetString(value)
+				}
+
+				if valueField.Kind() == reflect.Int {
+					i, _ := strconv.Atoi(value)
+					valueField.SetInt(int64(i))
+				}
+			}
+		}
+	}
 }
