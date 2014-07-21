@@ -62,6 +62,7 @@ type HaproxyServerInfo struct {
 
 func (h *Haproxy) GetInfo() {
 	conn, err := net.Dial("unix", h.Socket)
+	defer conn.Close()
 
 	if err != nil {
 		fmt.Println(err)
