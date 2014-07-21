@@ -22,8 +22,8 @@ func main() {
 	haproxy := new(Haproxy)
 	haproxy.Socket = conf.HaproxySocket
 
-	haproxy.GetInfo()
+	serverInfo := haproxy.GetInfo()
 
-	fmt.Println(haproxy.ServerInfo)
+	fmt.Println(serverInfo)
 
 }

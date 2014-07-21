@@ -1,8 +1,7 @@
 package main
 
 type Haproxy struct {
-	Socket     string
-	ServerInfo *HaproxyServerInfo
+	Socket string
 }
 
 //func (h *Haproxy) ff() {

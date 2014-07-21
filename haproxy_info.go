@@ -88,16 +88,15 @@ func (h *Haproxy) socketCommand(command string) (data []string, err error) {
 
 // Make a call to the HAProxy unix socket and read it into our
 // struct
-func (h *Haproxy) GetInfo() {
-	h.ServerInfo = new(HaproxyServerInfo)
-
+func (h *Haproxy) GetInfo() (serverInfo *HaproxyServerInfo) {
 	data, err := h.socketCommand("show info\n")
+	serverInfo = new(HaproxyServerInfo)
 
 	if err != nil {
-		return
+		return serverInfo
 	}
 
-	strukt := reflect.ValueOf(h.ServerInfo).Elem()
+	strukt := reflect.ValueOf(serverInfo).Elem()
 
 	for _, line := range data {
 		parts := strings.Split(line, ":")
@@ -138,4 +137,6 @@ func (h *Haproxy) GetInfo() {
 			}
 		}
 	}
+
+	return serverInfo
 }
