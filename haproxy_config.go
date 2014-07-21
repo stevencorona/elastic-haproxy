@@ -1,15 +1,41 @@
 package main
 
-type ConfigFile struct {
-	Blocks map[string]ConfigBlock
+type GlobalBlock struct {
+	Daemon          bool
+	Maxconn         int
+	CaBase          string
+	Chroot          string
+	CrtBase         string
+	Gid             int
+	Group           string
+	LogSendHostname string
+	Nbproc          int
+	Pidfile         string
+	Uid             int
+	UlimitN         int
+	User            string
+	Stats           string
+	SslServerVerify bool
+	Node            string
+	Description     string
+	UnixBind        string
+
+	Log struct {
+		Address  string
+		Length   int
+		Facility string
+		MaxLevel string
+		MinLevel string
+	}
 }
 
-type ConfigBlock struct {
-	Log      string
-	Mode     string
-	Options  map[string]string
-	Retries  int
-	Balance  string
-	Timeouts map[string]int
-	Servers  map[string]string
+type DefaultsBlock struct {
+	Mode    string
+	Timeout TimeoutBlock
+}
+
+type TimeoutBlock struct {
+	Connect int
+	Client  int
+	Server  int
 }
