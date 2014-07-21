@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"net"
 	"reflect"
 	"strconv"
@@ -60,58 +59,82 @@ type HaproxyServerInfo struct {
 	Description                string `haproxy:"description"`
 }
 
-func (h *Haproxy) GetInfo() {
+func (h *Haproxy) socketCommand(command string) (data []string, err error) {
 	conn, err := net.Dial("unix", h.Socket)
 	defer conn.Close()
 
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
-	conn.Write([]byte("show info\n"))
+	// Send command to HAProxy
+	conn.Write([]byte(command))
 
+	// Read the response line by line and return it
 	reader := bufio.NewReader(conn)
 
-	h.ServerInfo = new(HaproxyServerInfo)
-
-	val := reflect.ValueOf(h.ServerInfo).Elem()
-
 	for {
-		status, err := reader.ReadString('\n')
+		line, err := reader.ReadString('\n')
 
 		if err != nil {
-			//fmt.Println(err)
 			break
 		}
 
-		parts := strings.Split(status, ":")
+		data = append(data, line)
+	}
 
-		key := parts[0]
-		value := ""
+	return data, nil
+}
 
-		if strings.TrimSpace(key) == "" {
+// Make a call to the HAProxy unix socket and read it into our
+// struct
+func (h *Haproxy) GetInfo() {
+	h.ServerInfo = new(HaproxyServerInfo)
+
+	data, err := h.socketCommand("show info\n")
+
+	if err != nil {
+		return
+	}
+
+	strukt := reflect.ValueOf(h.ServerInfo).Elem()
+
+	for _, line := range data {
+		parts := strings.Split(line, ":")
+
+		if len(parts) != 2 {
 			continue
 		}
 
-		if len(parts) == 2 {
-			value = strings.TrimSpace(parts[1])
+		k := strings.TrimSpace(parts[0])
+		v := strings.TrimSpace(parts[1])
+
+		// Skip blank/empty keys
+		if k == "" {
+			continue
 		}
 
-		for i := 0; i < val.NumField(); i++ {
-			valueField := val.Field(i)
-			typeField := val.Type().Field(i)
-			tag := typeField.Tag
+		// Loop over all of the fields on the struct
+		for i := 0; i < strukt.NumField(); i++ {
 
-			if tag.Get("haproxy") == key {
+			// Grab the field value
+			fieldValue := strukt.Field(i)
 
-				if valueField.Kind() == reflect.String {
-					valueField.SetString(value)
-				}
+			// Grab the field tag
+			fieldTag := strukt.Type().Field(i).Tag
 
-				if valueField.Kind() == reflect.Int {
-					i, _ := strconv.Atoi(value)
-					valueField.SetInt(int64(i))
-				}
+			// If the haproxy tag doesn't match the key that we read in, move on.
+			if k != fieldTag.Get("haproxy") {
+				continue
+			}
+
+			// Set and convert the value read in depending on the type
+			switch fieldValue.Kind() {
+			case reflect.Int:
+				intVal, _ := strconv.Atoi(v)
+				fieldValue.SetInt(int64(intVal))
+			case reflect.String:
+				fieldValue.SetString(v)
 			}
 		}
 	}
