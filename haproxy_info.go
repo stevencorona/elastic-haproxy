@@ -61,11 +61,12 @@ type HaproxyServerInfo struct {
 
 func (h *Haproxy) socketCommand(command string) (data []string, err error) {
 	conn, err := net.Dial("unix", h.Socket)
-	defer conn.Close()
 
 	if err != nil {
 		return nil, err
 	}
+
+	defer conn.Close()
 
 	// Send command to HAProxy
 	conn.Write([]byte(command))
