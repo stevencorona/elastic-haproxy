@@ -13,7 +13,7 @@ type Config struct {
 }
 
 func LoadConfig(path string) (config *Config) {
-	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
+	if _, err := toml.DecodeFile(flagConfigFile, &config); err != nil {
 		fmt.Println(err)
 		return
 	}

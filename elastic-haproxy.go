@@ -1,12 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 )
 
+var flagConfigFile string
+
 func main() {
 
-	conf := LoadConfig("config.toml")
+	flag.StringVar(&flagConfigFile, "configFile", "config.toml", "Path to toml file")
+	flag.Parse()
+
+	conf := LoadConfig(flagConfigFile)
 
 	haproxy := new(Haproxy)
 	haproxy.Socket = conf.HaproxySocket
