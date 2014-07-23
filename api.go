@@ -24,10 +24,31 @@ func ELBHandler(w http.ResponseWriter, r *http.Request) {
 	switch action {
 	case "CreateLoadBalancer":
 		CreateLoadBalancerHandler(w, r)
+	case "CreateLoadBalancerListeners":
+		CreateLoadBalancerListenersHandler(w, r)
+	case "CreateLoadBalancerPolicy":
+		CreateLoadBalancerPolicyHandler(w, r)
+	case "RegisterInstancesWithLoadBalancer":
+		RegisterInstancesWithLoadBalancerHandler(w, r)
 	}
 }
 
 func CreateLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
+	loadBalancerName := r.FormValue("LoadBalancerName")
+	fmt.Println(loadBalancerName)
+}
+
+func CreateLoadBalancerListenersHandler(w http.ResponseWriter, r *http.Request) {
+	loadBalancerName := r.FormValue("LoadBalancerName")
+	fmt.Println(loadBalancerName)
+}
+
+func CreateLoadBalancerPolicyHandler(w http.ResponseWriter, r *http.Request) {
+	loadBalancerName := r.FormValue("LoadBalancerName")
+	fmt.Println(loadBalancerName)
+}
+
+func RegisterInstancesWithLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
 	loadBalancerName := r.FormValue("LoadBalancerName")
 	fmt.Println(loadBalancerName)
 }
