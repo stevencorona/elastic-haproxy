@@ -5,6 +5,38 @@ import (
 	"net/http"
 )
 
+type CreateLoadBalancerOptions struct {
+	AvailabilityZones string
+	Listeners         []ListenerOptions
+	LoadBalancerName  string
+	Scheme            string
+	SecurityGroups    []string
+	Subnets           []string
+}
+
+type CreateLoadBalancerListenersOptions struct {
+	Listeners        []ListenerOptions
+	LoadBalancerName string
+}
+
+type CreateLoadBalancerPolicyOptions struct {
+	PolicyAttributes []string
+	PolicyName       string
+	PolicyTypeName   string
+}
+
+type RegisterInstancesWithLoadBalancerOptions struct {
+	Instances        []string
+	LoadBalancerName string
+}
+
+type ListenerOptions struct {
+	LoadBalancerPort int
+	InstancePort     int
+	InstanceProtocol string
+	SSLCertificateId string
+}
+
 func SetupApiHandlers() {
 	http.HandleFunc("/", ELBHandler)
 	http.ListenAndServe(":8080", nil)
