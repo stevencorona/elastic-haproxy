@@ -12,10 +12,10 @@ func (h *Haproxy) GracefulRestart() {
 
 //}
 
-func (h *Haproxy) WriteConfig() {
+func (h *Haproxy) WriteConfig(haproxyConfig *GlobalBlock) {
 
 }
 
-func (h *Haproxy) ReadConfig() {
+func (h *Haproxy) ReadConfig(haproxyConfig *GlobalBlock) {
 
 }
