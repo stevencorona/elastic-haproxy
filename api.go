@@ -31,8 +31,9 @@ type RegisterInstancesWithLoadBalancerOptions struct {
 }
 
 type ListenerOptions struct {
-	LoadBalancerPort int
-	InstancePort     int
+	LoadBalancerPort string
+	Protocol         string
+	InstancePort     string
 	InstanceProtocol string
 	SSLCertificateId string
 }
@@ -63,8 +64,21 @@ func ELBHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
-	loadBalancerName := r.FormValue("LoadBalancerName")
-	fmt.Println(loadBalancerName)
+
+	optionSet := new(CreateLoadBalancerOptions)
+
+	optionSet.LoadBalancerName = r.FormValue("LoadBalancerName")
+	optionSet.Scheme = r.FormValue("Scheme")
+
+	listenerSet := ListenerOptions{}
+	listenerSet.LoadBalancerPort = r.FormValue("Listeners.member.1.LoadBalancerPort")
+	listenerSet.InstancePort = r.FormValue("Listeners.member.1.InstancePort")
+	listenerSet.Protocol = r.FormValue("Listeners.member.1.Protocol")
+	listenerSet.InstanceProtocol = r.FormValue("Listeners.member.1.InstanceProtocol")
+
+	optionSet.Listeners = append(optionSet.Listeners, listenerSet)
+
+	fmt.Println(optionSet)
 }
 
 func CreateLoadBalancerListenersHandler(w http.ResponseWriter, r *http.Request) {
