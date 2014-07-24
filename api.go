@@ -6,10 +6,7 @@ import (
 )
 
 func SetupApiHandlers() {
-
 	http.HandleFunc("/", ELBHandler)
-	//http.HandleFunc()
-
 	http.ListenAndServe(":8080", nil)
 }
 
