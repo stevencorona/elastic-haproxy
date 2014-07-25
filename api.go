@@ -20,7 +20,7 @@ type CreateLoadBalancerListenersOptions struct {
 }
 
 type CreateLoadBalancerPolicyOptions struct {
-	PolicyAttributes []string
+	PolicyAttributes []PolicyAttributeOptions
 	PolicyName       string
 	PolicyTypeName   string
 }
@@ -42,6 +42,11 @@ type ListenerOptions struct {
 type InstanceOptions struct {
 	InstanceId string
 	IpAddress  string
+}
+
+type PolicyAttributeOptions struct {
+	AttributeName  string
+	AttributeValue string
 }
 
 func SetupApiHandlers() {
