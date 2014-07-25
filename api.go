@@ -36,6 +36,7 @@ type ListenerOptions struct {
 	InstancePort     string
 	InstanceProtocol string
 	SSLCertificateId string
+	SSLCertificate   string
 }
 
 type InstanceOptions struct {
@@ -100,3 +101,5 @@ func RegisterInstancesWithLoadBalancerHandler(w http.ResponseWriter, r *http.Req
 	loadBalancerName := r.FormValue("LoadBalancerName")
 	fmt.Println(loadBalancerName)
 }
+
+func parseMembersFromInput()
