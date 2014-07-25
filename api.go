@@ -26,7 +26,7 @@ type CreateLoadBalancerPolicyOptions struct {
 }
 
 type RegisterInstancesWithLoadBalancerOptions struct {
-	Instances        []string
+	Instances        []InstanceOptions
 	LoadBalancerName string
 }
 
@@ -36,6 +36,11 @@ type ListenerOptions struct {
 	InstancePort     string
 	InstanceProtocol string
 	SSLCertificateId string
+}
+
+type InstanceOptions struct {
+	InstanceId string
+	IpAddress  string
 }
 
 func SetupApiHandlers() {
