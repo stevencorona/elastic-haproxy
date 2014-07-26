@@ -63,4 +63,6 @@ func RegisterInstancesWithLoadBalancerHandler(w http.ResponseWriter, r *http.Req
 	fmt.Println(loadBalancerName)
 }
 
-func parseMembersFromInput()
+func parseMembersFromInput() {
+
+}
