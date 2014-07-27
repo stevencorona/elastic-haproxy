@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	EnableStad       bool
+	EnableStatsd     bool
 	EnableAutosclale bool
 	EnableRoute53    bool
 	HaproxySocket    string
