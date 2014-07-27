@@ -27,7 +27,11 @@ func (h *Server) Start(start chan int, stop chan int) {
 
 	start <- 1
 	err = h.cmd.Wait()
-	log.Println(err)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	stop <- 1
 }
 
