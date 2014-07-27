@@ -33,7 +33,7 @@ func main() {
 
 	for {
 		<-notificationChan
-		fmt.Println("Got notify")
+		fmt.Println("Got notification")
 		time.Sleep(2 * time.Second)
 
 		server.Socket = conf.HaproxySocket

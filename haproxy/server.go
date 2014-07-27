@@ -61,7 +61,6 @@ func (h *Server) Start(notify chan Event, action chan Action) {
 
 	// Wait for a stop signal, reload signal, or process death
 	for {
-
 		switch <-action {
 		case WantsReload:
 			h.reloadProcess()
