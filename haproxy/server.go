@@ -70,14 +70,6 @@ func (h *Server) Shutdown() {
 	}
 }
 
-func (h *Server) GracefulRestart(start chan int, stop chan int) {
-	h.Lock()
-	defer h.Unlock()
-
-	h.Start(start, stop)
-
-}
-
 //func (h *Haproxy) AddFrontend() {
 
 //}
