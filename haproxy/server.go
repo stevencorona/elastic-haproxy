@@ -4,21 +4,27 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"sync"
 	"syscall"
 )
 
 type Server struct {
-	Socket  string
-	cmd     *exec.Cmd
-	process *os.Process
+	Socket string
+	cmd    *exec.Cmd
 	sync.RWMutex
 }
 
 func (h *Server) Start(start chan int, stop chan int) {
 	h.Lock()
 
-	h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf")
+	if h.cmd == nil {
+		h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf")
+	} else {
+		pid := strconv.Itoa(h.cmd.Process.Pid)
+		h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf", "-sf", pid)
+	}
+
 	h.cmd.Stdout = os.Stdout
 	h.cmd.Stderr = os.Stderr
 
@@ -28,7 +34,6 @@ func (h *Server) Start(start chan int, stop chan int) {
 		log.Fatal(err)
 	}
 
-	h.process = h.cmd.Process
 	h.Unlock()
 
 	start <- 1
@@ -45,13 +50,17 @@ func (h *Server) Shutdown() {
 	h.Lock()
 	defer h.Unlock()
 
-	err := h.process.Signal(syscall.SIGUSR1)
+	err := h.cmd.Process.Signal(syscall.SIGUSR1)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func (h *Server) GracefulRestart() {
+func (h *Server) GracefulRestart(start chan int, stop chan int) {
+	h.Lock()
+	defer h.Unlock()
+
+	h.Start(start, stop)
 
 }
 

@@ -44,7 +44,8 @@ func gracefulSignals(haproxy *haproxy.Server) {
 	for {
 		s := <-signals
 		log.Println("Got signal:", s)
-		haproxy.Shutdown()
-		os.Exit(0)
+		startChannel := make(chan int)
+		stopChannel := make(chan int)
+		go haproxy.Start(startChannel, stopChannel)
 	}
 }
