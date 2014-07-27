@@ -23,13 +23,13 @@ func main() {
 
 	haproxy := new(haproxy.Server)
 
-	startChannel := make(chan int)
-	stopChannel := make(chan int)
+	notificationChan := make(chan int)
+	shouldReloadChan := make(chan int)
 
 	go gracefulSignals(haproxy)
-	go haproxy.Start(startChannel, stopChannel)
+	go haproxy.Start(notificationChan, shouldReloadChan)
 
-	<-startChannel
+	<-notificationChan
 
 	haproxy.Socket = conf.HaproxySocket
 	serverInfo := haproxy.GetInfo()
@@ -44,8 +44,6 @@ func gracefulSignals(haproxy *haproxy.Server) {
 	for {
 		s := <-signals
 		log.Println("Got signal:", s)
-		startChannel := make(chan int)
-		stopChannel := make(chan int)
-		go haproxy.Start(startChannel, stopChannel)
+		haproxy.Reload <- 1
 	}
 }

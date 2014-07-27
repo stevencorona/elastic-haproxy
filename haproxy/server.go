@@ -9,22 +9,20 @@ import (
 	"syscall"
 )
 
+const HasStarted = 1
+const HasStopped = 2
+
 type Server struct {
 	Socket string
+	Reload chan int
 	cmd    *exec.Cmd
 	sync.RWMutex
 }
 
-func (h *Server) Start(start chan int, stop chan int) {
+func (h *Server) Start(notify chan int, reload chan int) {
 	h.Lock()
 
-	if h.cmd == nil {
-		h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf")
-	} else {
-		pid := strconv.Itoa(h.cmd.Process.Pid)
-		h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf", "-sf", pid)
-	}
-
+	h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf")
 	h.cmd.Stdout = os.Stdout
 	h.cmd.Stderr = os.Stderr
 
@@ -34,16 +32,32 @@ func (h *Server) Start(start chan int, stop chan int) {
 		log.Fatal(err)
 	}
 
+	h.Reload = reload
+
 	h.Unlock()
 
-	start <- 1
-	err = h.cmd.Wait()
+	notify <- HasStarted
 
-	if err != nil {
-		log.Println(err)
+	for {
+
+		<-reload
+
+		h.Lock()
+
+		oldPid := strconv.Itoa(h.cmd.Process.Pid)
+		newCmd := exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf", "-sf", oldPid)
+		h.cmd = newCmd
+		err := h.cmd.Start()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		h.Unlock()
+
 	}
 
-	stop <- 1
+	notify <- HasStopped
 }
 
 func (h *Server) Shutdown() {
