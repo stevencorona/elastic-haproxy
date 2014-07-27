@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/stevencorona/elastic-haproxy/haproxy"
 )
 
 var flagConfigFile string
@@ -14,7 +15,7 @@ func main() {
 
 	conf := LoadConfig(flagConfigFile)
 
-	haproxy := new(Haproxy)
+	haproxy := new(haproxy.Server)
 	haproxy.Socket = conf.HaproxySocket
 
 	serverInfo := haproxy.GetInfo()

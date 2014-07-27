@@ -1,4 +1,4 @@
-package main
+package haproxy
 
 type HaproxyStats struct {
 	ProxyName         string `csv:"pxname"`

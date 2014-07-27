@@ -1,4 +1,4 @@
-package main
+package haproxy
 
 type GlobalBlock struct {
 	Daemon          bool

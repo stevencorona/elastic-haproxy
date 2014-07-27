@@ -1,4 +1,4 @@
-package main
+package haproxy
 
 import (
 	"bufio"
@@ -59,7 +59,7 @@ type HaproxyServerInfo struct {
 	Description                string `haproxy:"description"`
 }
 
-func (h *Haproxy) socketCommand(command string) (data []string, err error) {
+func (h *Server) socketCommand(command string) (data []string, err error) {
 	conn, err := net.Dial("unix", h.Socket)
 
 	if err != nil {
@@ -89,7 +89,7 @@ func (h *Haproxy) socketCommand(command string) (data []string, err error) {
 
 // Make a call to the HAProxy unix socket and read it into our
 // struct
-func (h *Haproxy) GetInfo() (serverInfo *HaproxyServerInfo) {
+func (h *Server) GetInfo() (serverInfo *HaproxyServerInfo) {
 	data, err := h.socketCommand("show info\n")
 	serverInfo = new(HaproxyServerInfo)
 
