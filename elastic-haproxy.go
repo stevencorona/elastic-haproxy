@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 var defaultConfigFile = "config/elastic.toml"
@@ -28,24 +29,33 @@ func main() {
 
 	go gracefulSignals(haproxy)
 	go haproxy.Start(notificationChan, shouldReloadChan)
+	go elb.SetupApiHandlers()
 
 	for {
 		<-notificationChan
+		fmt.Println("Got notify")
+		time.Sleep(2 * time.Second)
 
 		haproxy.Socket = conf.HaproxySocket
 		serverInfo := haproxy.GetInfo()
 		fmt.Println(serverInfo)
-		elb.SetupApiHandlers()
 	}
 }
 
 func gracefulSignals(haproxy *haproxy.Server) {
 	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
 
 	for {
 		s := <-signals
 		log.Println("Got signal:", s)
+
+		if s == syscall.SIGQUIT {
+			fmt.Println("caught sigquit")
+			haproxy.ActionChan <- 8
+			os.Exit(1)
+		}
+
 		haproxy.ActionChan <- 4
 	}
 }

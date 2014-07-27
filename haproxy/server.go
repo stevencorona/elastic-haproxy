@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 	"sync"
-	"syscall"
+	"time"
 )
 
 const HasStarted = 1
@@ -74,7 +74,9 @@ func (h *Server) Start(notify chan int, action chan int) {
 }
 
 func (h *Server) reloadProcess() error {
+
 	// Grab pid of current running process
+	old := h.cmd
 	pid := strconv.Itoa(h.cmd.Process.Pid)
 
 	// Start a new process, telling it to replace the old process
@@ -90,10 +92,34 @@ func (h *Server) reloadProcess() error {
 
 	// No errors? Replace the old process
 	h.cmd = cmd
+	h.finishOrKill(10*time.Second, old)
 
 	return nil
 }
 
+func (h *Server) finishOrKill(waitFor time.Duration, old *exec.Cmd) {
+	// Create a channel and wait for the old process
+	// to finish itself
+	didFinish := make(chan error, 1)
+	go func() {
+		didFinish <- old.Wait()
+	}()
+
+	// Wait for the didFinish channel or force kill the process
+	// if it takes longer than 10 seconds
+	select {
+	case <-time.After(waitFor):
+		log.Println("manually killing process")
+		if err := old.Process.Kill(); err != nil {
+			log.Println("failed to kill ", err)
+		}
+	case err := <-didFinish:
+		if err != nil {
+			log.Println("process finished with error", err)
+		}
+	}
+}
+
 func (h *Server) stopProcess() error {
-	return h.cmd.Process.Signal(syscall.SIGUSR1)
+	return h.cmd.Process.Kill()
 }
