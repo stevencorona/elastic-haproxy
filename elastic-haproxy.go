@@ -29,12 +29,14 @@ func main() {
 	go gracefulSignals(haproxy)
 	go haproxy.Start(notificationChan, shouldReloadChan)
 
-	<-notificationChan
+	for {
+		<-notificationChan
 
-	haproxy.Socket = conf.HaproxySocket
-	serverInfo := haproxy.GetInfo()
-	fmt.Println(serverInfo)
-	elb.SetupApiHandlers()
+		haproxy.Socket = conf.HaproxySocket
+		serverInfo := haproxy.GetInfo()
+		fmt.Println(serverInfo)
+		elb.SetupApiHandlers()
+	}
 }
 
 func gracefulSignals(haproxy *haproxy.Server) {
@@ -44,6 +46,6 @@ func gracefulSignals(haproxy *haproxy.Server) {
 	for {
 		s := <-signals
 		log.Println("Got signal:", s)
-		haproxy.Reload <- 1
+		haproxy.ActionChan <- 4
 	}
 }
