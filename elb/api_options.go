@@ -1,4 +1,4 @@
-package main
+package elb
 
 type CreateLoadBalancerOptions struct {
 	AvailabilityZones string

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/stevencorona/elastic-haproxy/elb"
 	"github.com/stevencorona/elastic-haproxy/haproxy"
 )
 
@@ -22,6 +23,6 @@ func main() {
 
 	fmt.Println(serverInfo)
 
-	SetupApiHandlers()
+	elb.SetupApiHandlers()
 
 }
