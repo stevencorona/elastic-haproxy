@@ -9,14 +9,22 @@ import (
 	"time"
 )
 
-const HasStarted = 1
-const HasStopped = 2
-const WantsReload = 4
-const WantsStop = 8
+type Event int
+type Action int
+
+const (
+	HasStarted Event = 1 << iota
+	HasStopped
+)
+
+const (
+	WantsReload Action = 1 << iota
+	WantsStop
+)
 
 type Server struct {
 	Socket     string
-	ActionChan chan int
+	ActionChan chan Action
 	cmd        *exec.Cmd
 	sync.RWMutex
 }
@@ -34,7 +42,7 @@ func (h *Server) runProcess() error {
 	return h.cmd.Start()
 }
 
-func (h *Server) Start(notify chan int, action chan int) {
+func (h *Server) Start(notify chan Event, action chan Action) {
 	h.Lock()
 	h.createProcess()
 	h.setupStdout()
@@ -61,7 +69,7 @@ func (h *Server) Start(notify chan int, action chan int) {
 			log.Println("Replacing process")
 			h.reloadProcess()
 			h.Unlock()
-			notify <- 1
+			notify <- HasStarted
 			log.Println("Process has been replaced")
 		case WantsStop:
 			h.stopProcess()

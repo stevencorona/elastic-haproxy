@@ -22,13 +22,13 @@ func main() {
 
 	conf := LoadConfig(flagConfigFile)
 
-	haproxy := new(haproxy.Server)
+	server := new(haproxy.Server)
 
-	notificationChan := make(chan int)
-	shouldReloadChan := make(chan int)
+	notificationChan := make(chan haproxy.Event)
+	shouldReloadChan := make(chan haproxy.Action)
 
-	go gracefulSignals(haproxy)
-	go haproxy.Start(notificationChan, shouldReloadChan)
+	go gracefulSignals(server)
+	go server.Start(notificationChan, shouldReloadChan)
 	go elb.SetupApiHandlers()
 
 	for {
@@ -36,13 +36,13 @@ func main() {
 		fmt.Println("Got notify")
 		time.Sleep(2 * time.Second)
 
-		haproxy.Socket = conf.HaproxySocket
-		serverInfo := haproxy.GetInfo()
+		server.Socket = conf.HaproxySocket
+		serverInfo := server.GetInfo()
 		fmt.Println(serverInfo)
 	}
 }
 
-func gracefulSignals(haproxy *haproxy.Server) {
+func gracefulSignals(server *haproxy.Server) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
 
@@ -52,10 +52,10 @@ func gracefulSignals(haproxy *haproxy.Server) {
 
 		if s == syscall.SIGQUIT {
 			fmt.Println("caught sigquit")
-			haproxy.ActionChan <- 8
+			server.ActionChan <- haproxy.WantsStop
 			os.Exit(1)
 		}
 
-		haproxy.ActionChan <- 4
+		server.ActionChan <- haproxy.WantsReload
 	}
 }
