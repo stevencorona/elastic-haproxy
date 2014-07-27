@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 type Server struct {
@@ -33,6 +34,13 @@ func (h *Server) Start(start chan int, stop chan int) {
 	}
 
 	stop <- 1
+}
+
+func (h *Server) Shutdown() {
+	err := h.process.Signal(syscall.SIGUSR1)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (h *Server) GracefulRestart() {
