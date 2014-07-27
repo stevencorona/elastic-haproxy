@@ -1,3 +1,5 @@
+package main
+
 type CreateLoadBalancerOptions struct {
 	AvailabilityZones string
 	Listeners         []ListenerOptions
