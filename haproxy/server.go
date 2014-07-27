@@ -15,6 +15,7 @@ type Action int
 const (
 	HasStarted Event = 1 << iota
 	HasStopped
+	HasReloaded
 )
 
 const (
@@ -61,27 +62,21 @@ func (h *Server) Start(notify chan Event, action chan Action) {
 	// Wait for a stop signal, reload signal, or process death
 	for {
 
-		wants := <-action
-		h.Lock()
-
-		switch wants {
+		switch <-action {
 		case WantsReload:
-			log.Println("Replacing process")
 			h.reloadProcess()
-			h.Unlock()
-			notify <- HasStarted
-			log.Println("Process has been replaced")
+			notify <- HasReloaded
 		case WantsStop:
 			h.stopProcess()
-			h.Unlock()
-			break
+			notify <- HasStopped
+			return
 		}
 	}
-
-	notify <- HasStopped
 }
 
 func (h *Server) reloadProcess() error {
+
+	h.Lock()
 
 	// Grab pid of current running process
 	old := h.cmd
