@@ -41,7 +41,9 @@ func main() {
 		serverInfo := server.GetInfo()
 		fmt.Println(serverInfo)
 
-		go statsd.SendMetrics(server)
+		if conf.Statsd.Enabled {
+			go statsd.SendMetrics(server)
+		}
 	}
 }
 
