@@ -1,13 +1,25 @@
 package statsd
 
 import (
-	"github.com/stevencorona/elastic-haproxy"
+	"fmt"
+	"github.com/cyberdelia/statsd"
+	"github.com/stevencorona/elastic-haproxy/haproxy"
+	"time"
 )
 
-func main() {
-	config := LoadConfig()
+func SendMetrics(server *haproxy.Server) {
 
-	// loop every X seconds
-	// read stats from haproxy server
-	// post them to statsd
+	c, err := statsd.Dial("localhost:8125")
+
+	fmt.Println(err)
+
+	for {
+		info := server.GetInfo()
+		c.Gauge("current_connections", info.CurrConns, 1)
+		c.Gauge("cum_connections", info.CumConns, 1)
+		fmt.Println("current_connections", info.CurrConns)
+		fmt.Println("cum_connections", info.CumConns)
+		c.Flush()
+		time.Sleep(1 * time.Second)
+	}
 }

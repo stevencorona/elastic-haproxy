@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/stevencorona/elastic-haproxy/elb"
 	"github.com/stevencorona/elastic-haproxy/haproxy"
+	"github.com/stevencorona/elastic-haproxy/statsd"
 	"log"
 	"os"
 	"os/signal"
@@ -39,6 +40,8 @@ func main() {
 		server.Socket = conf.HaproxySocket
 		serverInfo := server.GetInfo()
 		fmt.Println(serverInfo)
+
+		go statsd.SendMetrics(server)
 	}
 }
 
