@@ -1,4 +1,24 @@
-EnableStatsd = true
-EnableAutoscale = true
-EnableRoute53 = true
-HaproxySocket = "/tmp/haproxy"
+[haproxy]
+socket = "/tmp/haproxy"
+binary = "/usr/local/bin/haproxy"
+
+[cluster]
+enabled = true
+
+[statsd]
+enabled = true
+hostname = "localhost"
+port = 8125
+
+[autoscale]
+enabled = true
+
+[route53]
+enabled = true
+
+[api]
+enabled = true
+
+[dashboard]
+enabled = true
+port = 9999

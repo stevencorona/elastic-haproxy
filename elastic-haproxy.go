@@ -37,7 +37,7 @@ func main() {
 		fmt.Println("Got notification")
 		time.Sleep(2 * time.Second)
 
-		server.Socket = conf.HaproxySocket
+		server.Socket = conf.Haproxy.Socket
 		serverInfo := server.GetInfo()
 		fmt.Println(serverInfo)
 
