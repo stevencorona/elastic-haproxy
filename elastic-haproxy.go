@@ -18,6 +18,14 @@ func main() {
 	conf := LoadConfig(flagConfigFile)
 
 	haproxy := new(haproxy.Server)
+
+	startChannel := make(chan int)
+	stopChannel := make(chan int)
+
+	go haproxy.Start(startChannel, stopChannel)
+
+	<-startChannel
+
 	haproxy.Socket = conf.HaproxySocket
 
 	serverInfo := haproxy.GetInfo()
