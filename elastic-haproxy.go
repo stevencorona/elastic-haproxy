@@ -7,11 +7,12 @@ import (
 	"github.com/stevencorona/elastic-haproxy/haproxy"
 )
 
+var defaultConfigFile = "config/elastic.toml"
 var flagConfigFile string
 
 func main() {
 
-	flag.StringVar(&flagConfigFile, "configFile", "config.toml", "Path to toml file")
+	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
 	flag.Parse()
 
 	conf := LoadConfig(flagConfigFile)
