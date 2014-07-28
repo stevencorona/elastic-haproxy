@@ -15,42 +15,16 @@ func Transform() {
 	fmt.Println(strings.Join(configFile, "\n"))
 }
 
-func ConfigString(format string, setting string, data []string) ([]string) {
-	if setting != "" {
-		data = append(data, fmt.Sprintf(format, setting))
-	}
-
-	return data
-}
-
-func ConfigStringAllowBlank(format string, setting string, data []string) ([]string) {
-	data = append(data, fmt.Sprintf(format, setting))
-	return data
-}
-
-func ConfigBool(format string, setting bool, data []string) ([]string) {
-	if setting {
-		data = append(data, fmt.Sprintf(format, setting))
-	}
-
-	return data
-}
-
-func ConfigInt(format string, setting int, data []string) ([]string) {
-	data = append(data, fmt.Sprintf(format, setting))
-	return data
-}
-
 func ParseGlobalBlock(global GlobalBlock) (data []string) {
 	data = append(data, "global")
 
-	data = ConfigBool("daemon",        global.Daemon, data)
-	data = ConfigInt("maxconn %d",     global.Maxconn, data)
-	data = ConfigString("ca-base %s",  global.CaBase, data)
-	data = ConfigString("chroot %s",   global.Chroot, data)
+	data = ConfigBool("daemon", global.Daemon, data)
+	data = ConfigInt("maxconn %d", global.Maxconn, data)
+	data = ConfigString("ca-base %s", global.CaBase, data)
+	data = ConfigString("chroot %s", global.Chroot, data)
 	data = ConfigString("crt-base %s", global.CrtBase, data)
-	data = ConfigInt("gid %d",         global.Gid, data)
-	data = ConfigString("group %s",    global.Group, data)
+	data = ConfigInt("gid %d", global.Gid, data)
+	data = ConfigString("group %s", global.Group, data)
 
 	data = ConfigStringAllowBlank("log-send-hostname %s", global.LogSendHostname, data)
 
@@ -81,5 +55,31 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 
 	// UnixBind
 
+	return data
+}
+
+func ConfigString(format string, setting string, data []string) []string {
+	if setting != "" {
+		data = append(data, fmt.Sprintf(format, setting))
+	}
+
+	return data
+}
+
+func ConfigStringAllowBlank(format string, setting string, data []string) []string {
+	data = append(data, fmt.Sprintf(format, setting))
+	return data
+}
+
+func ConfigBool(format string, setting bool, data []string) []string {
+	if setting {
+		data = append(data, fmt.Sprintf(format, setting))
+	}
+
+	return data
+}
+
+func ConfigInt(format string, setting int, data []string) []string {
+	data = append(data, fmt.Sprintf(format, setting))
 	return data
 }
