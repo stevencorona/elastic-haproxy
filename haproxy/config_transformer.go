@@ -20,40 +20,35 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 
 	data = ConfigBool("daemon", global.Daemon, data)
 	data = ConfigInt("maxconn %d", global.Maxconn, data)
+
 	data = ConfigString("ca-base %s", global.CaBase, data)
 	data = ConfigString("chroot %s", global.Chroot, data)
 	data = ConfigString("crt-base %s", global.CrtBase, data)
+
 	data = ConfigInt("gid %d", global.Gid, data)
 	data = ConfigString("group %s", global.Group, data)
+	data = ConfigString("user %s", global.User, data)
+	data = ConfigInt("uid %d", global.Uid, data)
 
-	data = ConfigStringAllowBlank("log-send-hostname %s", global.LogSendHostname, data)
-
-	data = ConfigString("log-tag %s", global.LogTag, data)
 	data = ConfigInt("nbproc %d", global.Nbproc, data)
+
+	data = ConfigString("log %s", global.Log, data)
+	data = ConfigString("log-tag %s", global.LogTag, data)
+	data = ConfigStringAllowBlank("log-send-hostname %s", global.LogSendHostname, data)
 	data = ConfigString("pidfile %s", global.Pidfile, data)
+
 	data = ConfigString("stats bind-process %s", global.StatsBind, data)
+	data = ConfigString("stats socket %s", global.StatsSocket, data)
+	data = ConfigString("stats timeout %s", global.StatsTimeout, data)
+
 	data = ConfigString("ssl-default-bind-ciphers %s", global.SslDefaultBind)
-	// LogSendHostname
+	data = ConfigString("ssl-server-verify %s", global.SslServerVerify)
 
-	// Nbproc
+	data = ConfigInt("ulimit-n %d", global.UlimitN, data)
 
-	// Pidfile
-
-	// Uid
-
-	// UlimitN
-
-	// User
-
-	// Stats
-
-	// SslServerVerify
-
-	// Node
-
-	// Description
-
-	// UnixBind
+	data = ConfigString("node %s", global.Node, data)
+	data = ConfigString("description %s", global.Description, data)
+	data = ConfigString("unix-bind %s", global.UnixBind, data)
 
 	return data
 }
