@@ -7,37 +7,68 @@ type Config struct {
 }
 
 type GlobalBlock struct {
-	Daemon          bool `config:"daemon %s"`
-	Maxconn         int  `config:"maxconn %s"`
-	CaBase          string
-	Chroot          string
-	CrtBase         string
-	Gid             int
-	Group           string
-	LogSendHostname string
-	LogTag string
-	CpuMap string
-	Nbproc          int
-	Pidfile         string
-	Uid             int
-	UlimitN         int
-	User            string
-	StatsBind       string
-	StatsSocket     string
-	SslDefaultBindCiphers string
+	Daemon                  bool
+	CaBase                  string
+	Chroot                  string
+	CrtBase                 string
+	Gid                     int
+	Group                   string
+	Log                     string
+	LogSendHostname         string
+	LogTag                  string
+	CpuMap                  string
+	Nbproc                  int
+	Pidfile                 string
+	Uid                     int
+	UlimitN                 int
+	User                    string
+	StatsBind               string
+	StatsSocket             string
+	SslDefaultBindCiphers   string
 	SslDefaultServerCiphers string
-	SslServerVerify string
-	Node            string
-	Description     string
-	UnixBind        string
-
-	Log struct {
-		Address  string
-		Length   int
-		Facility string
-		MaxLevel string
-		MinLevel string
-	} `config:"log %s %s %s %s %s"`
+	SslServerVerify         string
+	Node                    string
+	Description             string
+	UnixBind                string
+	MaxSpreadChecks         int
+	MaxConn                 int
+	MaxConnRate             int
+	MaxCompRate             int
+	MaxCompCpuUsage         int
+	MaxPipes                int
+	MaxSessRate             int
+	MaxSslConn              int
+	MaxSslRate              int
+	MaxZlibMem              int
+	NoEpoll                 bool
+	NoKQueue                bool
+	NoPoll                  bool
+	NoSplice                bool
+	NoGetAddrInfo           bool
+	SpreadChecks            int
+	Tuning                  struct {
+		Bufsize              int
+		Chksize              int
+		CompMaxLevel         int
+		HttpCookieLen        int
+		HttpMaxHeader        int
+		IdleTimer            int
+		MaxAccept            int
+		MaxPollEvents        int
+		MaxRewrite           int
+		PipeSize             int
+		RcvBufClient         int
+		RcvBufServer         int
+		SndBufClient         int
+		SndBufServer         int
+		SslCacheSize         int
+		SslForcePrivateCache int
+		SslLifetime          int
+		SslMaxRecord         int
+		SslDefaultDhParam    int
+		ZlibMemLevel         int
+		ZlibWindowSize       int
+	}
 }
 
 type DefaultBlock struct {
