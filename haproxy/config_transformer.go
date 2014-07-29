@@ -19,7 +19,7 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 	data = append(data, "global")
 
 	data = ConfigBool("daemon", global.Daemon, data)
-	data = ConfigInt("maxconn %d", global.Maxconn, data)
+	data = ConfigInt("maxconn %d", global.MaxConn, data)
 
 	data = ConfigString("ca-base %s", global.CaBase, data)
 	data = ConfigString("chroot %s", global.Chroot, data)
@@ -41,8 +41,8 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 	data = ConfigString("stats socket %s", global.StatsSocket, data)
 	data = ConfigString("stats timeout %s", global.StatsTimeout, data)
 
-	data = ConfigString("ssl-default-bind-ciphers %s", global.SslDefaultBind)
-	data = ConfigString("ssl-server-verify %s", global.SslServerVerify)
+	data = ConfigString("ssl-default-bind-ciphers %s", global.SslDefaultBind, data)
+	data = ConfigString("ssl-server-verify %s", global.SslServerVerify, data)
 
 	data = ConfigInt("ulimit-n %d", global.UlimitN, data)
 
@@ -51,6 +51,14 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 	data = ConfigString("unix-bind %s", global.UnixBind, data)
 
 	return data
+}
+
+func ParseFrontendBlock(frontend FrontendBlock) (data []string) {
+	data = ConfigString("frontend %s", frontend.Name)
+
+	for _, bind := range frontend.Binds {
+		//data = ConfigString("bind %s:%s", bind.IpAddress, bind.Port)
+	}
 }
 
 func ConfigString(format string, setting string, data []string) []string {

@@ -1,9 +1,8 @@
 package haproxy
 
 type Config struct {
-	Global   GlobalBlock
-	Defaults DefaultBlock
-	//Frontends []FrontendBlock
+	Global    GlobalBlock
+	Frontends []FrontendBlock
 }
 
 type GlobalBlock struct {
@@ -71,7 +70,17 @@ type GlobalBlock struct {
 	}
 }
 
-type DefaultBlock struct {
+type FrontendBlock struct {
+	Name  string
+	Binds []BindBlock
+}
+
+type BindBlock struct {
+	IpAddress string
+	Port      int
+}
+
+type ProxyBlock struct {
 	Mode    string
 	Timeout []TimeoutBlock
 	Options map[string]string
