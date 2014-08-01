@@ -18,6 +18,9 @@ var flagConfigFile string
 
 func main() {
 
+	haproxy.Transform()
+	os.Exit(1)
+
 	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
 	flag.Parse()
 
