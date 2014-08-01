@@ -35,6 +35,10 @@ func main() {
 	go server.Start(notificationChan, actionChan)
 	go elb.SetupApiHandlers()
 
+	if conf.Statsd.Enabled {
+		go statsd.SendMetrics(server)
+	}
+
 	for {
 		<-notificationChan
 		fmt.Println("Got notification")
@@ -43,10 +47,6 @@ func main() {
 		server.Socket = conf.Haproxy.Socket
 		serverInfo := server.GetInfo()
 		fmt.Println(serverInfo)
-
-		if conf.Statsd.Enabled {
-			go statsd.SendMetrics(server)
-		}
 	}
 }
 
