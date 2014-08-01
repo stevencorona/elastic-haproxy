@@ -29,10 +29,10 @@ func main() {
 	server := new(haproxy.Server)
 
 	notificationChan := make(chan haproxy.Event)
-	shouldReloadChan := make(chan haproxy.Action)
+	actionChan := make(chan haproxy.Action)
 
 	go gracefulSignals(server)
-	go server.Start(notificationChan, shouldReloadChan)
+	go server.Start(notificationChan, actionChan)
 	go elb.SetupApiHandlers()
 
 	for {
