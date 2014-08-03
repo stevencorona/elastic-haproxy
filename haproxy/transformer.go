@@ -57,9 +57,11 @@ func ParseFrontendBlock(frontend FrontendBlock) (data []string) {
 	data = ConfigString("frontend %s", frontend.Name)
 
 	for _, bind := range frontend.Binds {
-		//data = ConfigString("bind %s:%s", bind.IpAddress, bind.Port)
+		data = ConfigString("bind %s", bind.IpAddress)
 	}
 }
+
+// func ConfigString(format string, data []string, settings ...string)
 
 func ConfigString(format string, setting string, data []string) []string {
 	if setting != "" {
