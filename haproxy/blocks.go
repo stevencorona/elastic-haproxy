@@ -23,6 +23,7 @@ type GlobalBlock struct {
 	User                    string
 	StatsBind               string
 	StatsSocket             string
+	StatsTimeout            string
 	SslDefaultBindCiphers   string
 	SslDefaultServerCiphers string
 	SslServerVerify         string

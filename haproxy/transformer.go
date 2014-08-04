@@ -2,17 +2,22 @@ package haproxy
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"strings"
 )
 
 func Transform() {
 	config := new(Config)
-	configFile := make([]string, 0)
+	configData := make([]string, 0)
 
 	global := ParseGlobalBlock(config.Global)
+	configData = append(configData, global[0:]...)
 
-	configFile = append(configFile, global[0:]...)
-	fmt.Println(strings.Join(configFile, "\n"))
+	if len(config.Frontends) > 0 {
+		frontend := ParseFrontendBlock(config.Frontends[0])
+		configData = append(configData, frontend[0:]...)
+	}
 }
 
 func ParseGlobalBlock(global GlobalBlock) (data []string) {
@@ -41,7 +46,7 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 	data = ConfigString("stats socket %s", global.StatsSocket, data)
 	data = ConfigString("stats timeout %s", global.StatsTimeout, data)
 
-	data = ConfigString("ssl-default-bind-ciphers %s", global.SslDefaultBind, data)
+	data = ConfigString("ssl-default-bind-ciphers %s", global.SslDefaultBindCiphers, data)
 	data = ConfigString("ssl-server-verify %s", global.SslServerVerify, data)
 
 	data = ConfigInt("ulimit-n %d", global.UlimitN, data)
@@ -54,11 +59,14 @@ func ParseGlobalBlock(global GlobalBlock) (data []string) {
 }
 
 func ParseFrontendBlock(frontend FrontendBlock) (data []string) {
-	data = ConfigString("frontend %s", frontend.Name)
+	data = make([]string, 0)
+	data = ConfigString("frontend %s", frontend.Name, data)
 
 	for _, bind := range frontend.Binds {
-		data = ConfigString("bind %s", bind.IpAddress)
+		data = ConfigString("bind %s", bind.IpAddress, data)
 	}
+
+	return data
 }
 
 // func ConfigString(format string, data []string, settings ...string)
