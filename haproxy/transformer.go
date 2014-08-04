@@ -2,9 +2,6 @@ package haproxy
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"strings"
 )
 
 func Transform() {
