@@ -30,8 +30,10 @@ type Server struct {
 	sync.RWMutex
 }
 
+const BinaryPath = "/usr/local/bin/haproxy"
+
 func (h *Server) createProcess() {
-	h.cmd = exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf")
+	h.cmd = exec.Command(BinaryPath, "-f", "config/haproxy.conf")
 }
 
 func (h *Server) setupStdout() {
