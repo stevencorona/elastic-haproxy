@@ -28,8 +28,10 @@ func main() {
 
 	server := new(haproxy.Server)
 
-	notificationChan := make(chan haproxy.Event)
+	// We use two channels— one to send actions to the server and one to recieve
+	// notifications from it. Create them right now.
 	actionChan := make(chan haproxy.Action)
+	notificationChan := make(chan haproxy.Event)
 
 	// Handle signals gracefully in another goroutine
 	go gracefulSignals(server)
