@@ -31,8 +31,13 @@ func main() {
 	notificationChan := make(chan haproxy.Event)
 	actionChan := make(chan haproxy.Action)
 
+	// Handle signals gracefully in another goroutine
 	go gracefulSignals(server)
+
+	// Start up the HAProxy Server
 	go server.Start(notificationChan, actionChan)
+
+	// Setup the ELB HTTP Handlers
 	go elb.SetupApiHandlers()
 
 	if conf.Statsd.Enabled {
