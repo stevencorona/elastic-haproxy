@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/stevencorona/elastic-haproxy/elb"
 	"github.com/stevencorona/elastic-haproxy/haproxy"
 	"github.com/stevencorona/elastic-haproxy/statsd"
@@ -50,12 +49,12 @@ func main() {
 
 	for {
 		<-notificationChan
-		fmt.Println("Got notification")
+		log.Println("Received a notification")
 		time.Sleep(2 * time.Second)
 
 		server.Socket = conf.Haproxy.Socket
 		serverInfo := server.GetInfo()
-		fmt.Println(serverInfo)
+		log.Println(serverInfo)
 	}
 }
 
@@ -65,10 +64,10 @@ func gracefulSignals(server *haproxy.Server) {
 
 	for {
 		s := <-signals
-		log.Println("Got signal:", s)
+		log.Println("Received a signal", s)
 
 		if s == syscall.SIGQUIT {
-			fmt.Println("caught sigquit")
+			log.Println("Caught SIGQUIT, Stopping HAProxy")
 			server.ActionChan <- haproxy.WantsStop
 			os.Exit(1)
 		}
