@@ -47,6 +47,8 @@ func main() {
 		go statsd.SendMetrics(server)
 	}
 
+	// Event loop for handling events from the HAProxy server
+	// (right now, it only sends start/stop notifications)
 	for {
 		<-notificationChan
 		log.Println("Received a notification")
@@ -56,6 +58,7 @@ func main() {
 		serverInfo := server.GetInfo()
 		log.Println(serverInfo)
 	}
+
 }
 
 func gracefulSignals(server *haproxy.Server) {
