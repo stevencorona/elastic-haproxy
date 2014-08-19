@@ -33,7 +33,7 @@ func main() {
 	notificationChan := make(chan haproxy.Event)
 
 	// Handle signals gracefully in another goroutine
-	go gracefulSignals(server)
+	go gracefulSignals(server, notificationChan)
 
 	// Start up the HAProxy Server
 	go server.Start(notificationChan, actionChan)
@@ -72,6 +72,9 @@ func gracefulSignals(server *haproxy.Server) {
 		if s == syscall.SIGQUIT {
 			log.Println("Caught SIGQUIT, Stopping HAProxy")
 			server.ActionChan <- haproxy.WantsStop
+
+			// Race condition, this exits before we stop :( It should wait!
+			<-notificationChan
 			os.Exit(1)
 		}
 
