@@ -71,6 +71,8 @@ func gracefulSignals(server *haproxy.Server) {
 
 		if s == syscall.SIGQUIT {
 			log.Println("Caught SIGQUIT, Stopping HAProxy")
+
+			// Tell server to stop and wait for a response
 			server.ActionChan <- haproxy.WantsStop
 
 			// Race condition, this exits before we stop :( It should wait!
