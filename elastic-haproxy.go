@@ -78,8 +78,8 @@ func gracefulSignals(server *haproxy.Server) {
 			// Race condition, this exits before we stop :( It should wait!
 			<-notificationChan
 			os.Exit(1)
+		} else {
+			server.ActionChan <- haproxy.WantsReload
 		}
-
-		server.ActionChan <- haproxy.WantsReload
 	}
 }
