@@ -61,6 +61,10 @@ func main() {
 
 }
 
+// Capture, capture, capture those signals. We gracefully shutdown on a
+// SIGQUIT (this is what docker sends w/ docker stop) and everything else
+// causes a graceful (zero-downtime) restart of HAProxy. Remember, HAProxy
+// does not support reloads or graceful restarts without some... trickery.
 func gracefulSignals(server *haproxy.Server) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
