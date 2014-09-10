@@ -18,7 +18,6 @@ var flagConfigFile string
 func main() {
 
 	haproxy.Transform()
-	os.Exit(1)
 
 	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
 	flag.Parse()
@@ -33,7 +32,7 @@ func main() {
 	notificationChan := make(chan haproxy.Event)
 
 	// Handle signals gracefully in another goroutine
-	go gracefulSignals(server, notificationChan)
+	go gracefulSignals(server, actionChan, notificationChan)
 
 	// Start up the HAProxy Server
 	go server.Start(notificationChan, actionChan)
@@ -65,7 +64,7 @@ func main() {
 // SIGQUIT (this is what docker sends w/ docker stop) and everything else
 // causes a graceful (zero-downtime) restart of HAProxy. Remember, HAProxy
 // does not support reloads or graceful restarts without some... trickery.
-func gracefulSignals(server *haproxy.Server) {
+func gracefulSignals(server *haproxy.Server, actionChan chan haproxy.Action, notificationChan chan haproxy.Event) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
 
@@ -77,13 +76,13 @@ func gracefulSignals(server *haproxy.Server) {
 			log.Println("Caught SIGQUIT, Stopping HAProxy")
 
 			// Tell server to stop and wait for a response
-			server.ActionChan <- haproxy.WantsStop
+			actionChan <- haproxy.WantsStop
 
 			// Race condition, this exits before we stop :( It should wait!
 			<-notificationChan
 			os.Exit(1)
 		} else {
-			server.ActionChan <- haproxy.WantsReload
+			actionChan <- haproxy.WantsReload
 		}
 	}
 }
