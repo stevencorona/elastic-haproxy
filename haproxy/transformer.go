@@ -15,6 +15,8 @@ func Transform() {
 		frontend := ParseFrontendBlock(config.Frontends[0])
 		configData = append(configData, frontend[0:]...)
 	}
+
+	fmt.Println(configData)
 }
 
 func ParseGlobalBlock(global GlobalBlock) (data []string) {
