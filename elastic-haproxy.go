@@ -17,6 +17,8 @@ var flagConfigFile string
 
 func main() {
 
+	// Read in the configuration file settings. I think we should instead
+	// serialize to JSON and treat this like a view.
 	haproxy.Transform()
 
 	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
