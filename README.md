@@ -20,3 +20,9 @@ All of this is done outside of the HAProxy code path, so it still maintains the 
 The main method of implementation is to wrap the HAProxy binary and execute it from a goroutine. We normalize the configuration as a bunch of structs and serialize the output as the HAProxy config.
 
 Zero downtime reconfigurations are accomplished using the `-sf` trick and (if on linux) some iptables magic.
+
+Multi-node configuration is handled via ZooKeeper (or possibly etcd).
+
+## Coming in the future
+
+* Mesos framework+executor!
