@@ -50,8 +50,7 @@ func main() {
 
 	// Event loop for handling events from the HAProxy server
 	// (right now, it only sends start/stop notifications)
-	for {
-		<-notificationChan
+	for _ = range notificationChan {
 		log.Println("Received a notification")
 		time.Sleep(2 * time.Second)
 
