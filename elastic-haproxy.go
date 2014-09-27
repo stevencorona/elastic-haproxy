@@ -69,20 +69,16 @@ func gracefulSignals(server *haproxy.Server, actionChan chan haproxy.Action, not
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
 
-	for {
-		s := <-signals
+	for s := range signals {
 		log.Println("Received a signal", s)
 
-		if s == syscall.SIGQUIT {
+		switch s {
+		case syscall.SIGQUIT:
 			log.Println("Caught SIGQUIT, Stopping HAProxy")
-
-			// Tell server to stop and wait for a response
 			actionChan <- haproxy.WantsStop
-
-			// Race condition, this exits before we stop :( It should wait!
 			<-notificationChan
 			os.Exit(1)
-		} else {
+		default:
 			actionChan <- haproxy.WantsReload
 		}
 	}
