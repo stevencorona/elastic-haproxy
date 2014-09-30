@@ -40,7 +40,7 @@ func main() {
 	go server.Start(notificationChan, actionChan)
 
 	// Setup the ELB HTTP Handlers
-	go elb.SetupApiHandlers()
+	go elb.InitApiHandlers()
 
 	// Fire up statsd goroutine if statsd is enabled. This might be better off in
 	// a seperate binary to monitor HAProxy.

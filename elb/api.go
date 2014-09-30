@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func SetupApiHandlers() {
+func InitApiHandlers() {
 	http.HandleFunc("/", ELBHandler)
 	http.ListenAndServe(":8080", nil)
 }
