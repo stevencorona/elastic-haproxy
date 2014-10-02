@@ -24,7 +24,11 @@ func main() {
 	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
 	flag.Parse()
 
-	conf := LoadConfig(flagConfigFile)
+	conf, err := LoadConfig(flagConfigFile)
+
+	if err != nil {
+		log.Fatal("Could not load configuration", err)
+	}
 
 	server := new(haproxy.Server)
 

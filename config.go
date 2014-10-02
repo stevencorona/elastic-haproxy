@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/BurntSushi/toml"
 )
 
@@ -46,11 +45,10 @@ type dashboardConfig struct {
 	Enabled bool
 }
 
-func LoadConfig(path string) (config *Config) {
+func LoadConfig(path string) (config *Config, err error) {
 	if _, err := toml.DecodeFile(flagConfigFile, &config); err != nil {
-		fmt.Println(err)
-		return
+		return nil, err
 	}
 
-	return config
+	return config, nil
 }
