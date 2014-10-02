@@ -52,7 +52,6 @@ func main() {
 	// (right now, it only sends start/stop notifications)
 	for _ = range notificationChan {
 		log.Println("Received a notification")
-		time.Sleep(2 * time.Second)
 
 		server.Socket = conf.Haproxy.Socket
 		serverInfo := server.GetInfo()
