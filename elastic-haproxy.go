@@ -11,7 +11,7 @@ import (
 	"syscall"
 )
 
-var defaultConfigFile = "config/elastic.toml"
+const DEFAULT_CONFIG_FILE = "config/elastic.toml"
 var flagConfigFile string
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 	// serialize to JSON and treat this like a view.
 	haproxy.Transform()
 
-	flag.StringVar(&flagConfigFile, "configFile", defaultConfigFile, "Path to toml file")
+	flag.StringVar(&flagConfigFile, "configFile", DEFAULT_CONFIG_FILE, "Path to toml file")
 	flag.Parse()
 
 	conf, err := LoadConfig(flagConfigFile)
