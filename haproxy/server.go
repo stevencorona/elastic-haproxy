@@ -30,10 +30,10 @@ type Server struct {
 	sync.RWMutex
 }
 
-const BinaryPath = "/usr/local/bin/haproxy"
+const BINARYPATH = "/usr/local/bin/haproxy"
 
 func (h *Server) createProcess() {
-	h.cmd = exec.Command(BinaryPath, "-f", "config/haproxy.conf")
+	h.cmd = exec.Command(BINARYPATH, "-f", "config/haproxy.conf")
 }
 
 func (h *Server) setupStdout() {
@@ -86,7 +86,7 @@ func (h *Server) reloadProcess() error {
 	// Start a new process, telling it to replace the old process
 	// This will signal the current process and tell it shutdown, which is why
 	// we don't need to do it here.
-	cmd := exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf", "-sf", pid)
+	cmd := exec.Command(BINARYPATH, "-f", "config/haproxy.conf", "-sf", pid)
 
 	// Start the new process and check for errors. We bail out if there is
 	// an error and DON'T replace the old process.
