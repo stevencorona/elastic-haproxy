@@ -84,6 +84,8 @@ func (h *Server) reloadProcess() error {
 	pid := strconv.Itoa(h.cmd.Process.Pid)
 
 	// Start a new process, telling it to replace the old process
+	// This will signal the current process and tell it shutdown, which is why
+	// we don't need to do it here.
 	cmd := exec.Command("/usr/local/bin/haproxy", "-f", "config/haproxy.conf", "-sf", pid)
 
 	// Start the new process and check for errors. We bail out if there is
