@@ -1,12 +1,12 @@
 package elb
 
 type CreateLoadBalancerOptions struct {
-	AvailabilityZones string
+	AvailabilityZones string							// Ignored
 	Listeners         []ListenerOptions
 	LoadBalancerName  string
 	Scheme            string
-	SecurityGroups    []string
-	Subnets           []string
+	SecurityGroups    []string						// Ignored
+	Subnets           []string						// Ignored
 }
 
 type CreateLoadBalancerListenersOptions struct {
@@ -30,8 +30,8 @@ type ListenerOptions struct {
 	Protocol         string
 	InstancePort     string
 	InstanceProtocol string
-	SSLCertificateId string
-	SSLCertificate   string
+	SSLCertificateId string // Ignored
+	SSLCertificate   string	// Ignored
 }
 
 type InstanceOptions struct {
