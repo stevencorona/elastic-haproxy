@@ -3,14 +3,26 @@ package elb
 import (
 	"fmt"
 	"net/http"
+	"github.com/stevencorona/elastic-haproxy/haproxy"
 )
 
+type ElasticLoadBalancer struct {
+	Nodes []haproxy.Server
+}
+
+type ElbApi struct {
+	Elb ElasticLoadBalancer
+}
+
 func InitApiHandlers() {
-	http.HandleFunc("/", ELBHandler)
+
+	api := new(ElbApi)
+
+	http.HandleFunc("/", api.ELBHandler)
 	http.ListenAndServe(":8080", nil)
 }
 
-func ELBHandler(w http.ResponseWriter, r *http.Request) {
+func (api *ElbApi) ELBHandler(w http.ResponseWriter, r *http.Request) {
 	action := r.FormValue("Action")
 	version := r.FormValue("Version")
 
@@ -20,17 +32,17 @@ func ELBHandler(w http.ResponseWriter, r *http.Request) {
 	// request to the correct handler.
 	switch action {
 	case "CreateLoadBalancer":
-		CreateLoadBalancerHandler(w, r)
+		api.CreateLoadBalancerHandler(w, r)
 	case "CreateLoadBalancerListeners":
-		CreateLoadBalancerListenersHandler(w, r)
+		api.CreateLoadBalancerListenersHandler(w, r)
 	case "CreateLoadBalancerPolicy":
-		CreateLoadBalancerPolicyHandler(w, r)
+		api.CreateLoadBalancerPolicyHandler(w, r)
 	case "RegisterInstancesWithLoadBalancer":
-		RegisterInstancesWithLoadBalancerHandler(w, r)
+		api.RegisterInstancesWithLoadBalancerHandler(w, r)
 	}
 }
 
-func CreateLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
+func (api *ElbAPi) CreateLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
 
 	optionSet := new(CreateLoadBalancerOptions)
 
@@ -48,21 +60,21 @@ func CreateLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(optionSet)
 }
 
-func CreateLoadBalancerListenersHandler(w http.ResponseWriter, r *http.Request) {
+func (api *ElbAPi) CreateLoadBalancerListenersHandler(w http.ResponseWriter, r *http.Request) {
 	loadBalancerName := r.FormValue("LoadBalancerName")
 	fmt.Println(loadBalancerName)
 }
 
-func CreateLoadBalancerPolicyHandler(w http.ResponseWriter, r *http.Request) {
+func (api *ElbAPi) CreateLoadBalancerPolicyHandler(w http.ResponseWriter, r *http.Request) {
 	loadBalancerName := r.FormValue("LoadBalancerName")
 	fmt.Println(loadBalancerName)
 }
 
-func RegisterInstancesWithLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
+func (api *ElbAPi) RegisterInstancesWithLoadBalancerHandler(w http.ResponseWriter, r *http.Request) {
 	loadBalancerName := r.FormValue("LoadBalancerName")
 	fmt.Println(loadBalancerName)
 }
 
-func parseMembersFromInput() {
+func (api *ElbAPi) parseMembersFromInput() {
 
 }
