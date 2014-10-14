@@ -6,12 +6,8 @@ import (
 	"github.com/stevencorona/elastic-haproxy/haproxy"
 )
 
-type ElasticLoadBalancer struct {
-	Nodes []haproxy.Server
-}
-
 type ElbApi struct {
-	Elb ElasticLoadBalancer
+	Cluster haproxy.Cluster
 }
 
 func InitApiHandlers() {
