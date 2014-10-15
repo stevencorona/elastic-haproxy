@@ -17,8 +17,6 @@ func SendMetrics(server *haproxy.Server) {
 		info := server.GetInfo()
 		c.Gauge("current_connections", info.CurrConns, 1)
 		c.Gauge("cum_connections", info.CumConns, 1)
-		fmt.Println("current_connections", info.CurrConns)
-		fmt.Println("cum_connections", info.CumConns)
 		c.Flush()
 		time.Sleep(1 * time.Second)
 	}
