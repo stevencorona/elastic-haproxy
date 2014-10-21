@@ -58,7 +58,6 @@ func main() {
 
 		server.Socket = conf.Haproxy.Socket
 		serverInfo := server.GetInfo()
-		log.Println(serverInfo)
 	}
 
 }
