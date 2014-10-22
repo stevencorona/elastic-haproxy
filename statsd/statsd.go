@@ -11,7 +11,11 @@ func SendMetrics(server *haproxy.Server) {
 
 	c, err := statsd.Dial("localhost:8125")
 
-	fmt.Println(err)
+	// TODO: Instead of dying completely, should put this on a retry
+	// and try again.
+	if err != nil {
+		log.Fatal("Could not connect to statsd")
+	}
 
 	for {
 		info := server.GetInfo()
