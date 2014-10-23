@@ -94,6 +94,7 @@ func (h *Server) GetInfo() (serverInfo *HaproxyServerInfo) {
 	serverInfo = new(HaproxyServerInfo)
 
 	if err != nil {
+		log.Println("Couldn't connect to HaProxy Socket")
 		return serverInfo
 	}
 
