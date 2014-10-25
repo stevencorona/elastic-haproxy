@@ -13,6 +13,7 @@ import (
 
 const DEFAULT_CONFIG_FILE = "config/elastic.toml"
 var flagConfigFile string
+var flagDebugMode string
 
 func main() {
 
@@ -21,6 +22,7 @@ func main() {
 	// haproxy.Transform()
 
 	flag.StringVar(&flagConfigFile, "configFile", DEFAULT_CONFIG_FILE, "Path to toml file")
+	flag.StringVar(&flagDebugMode, "debugMode", false, "Enable debug mode")
 	flag.Parse()
 
 	conf, err := LoadConfig(flagConfigFile)
