@@ -46,7 +46,6 @@ type dashboardConfig struct {
 }
 
 func LoadConfig(path string) (config *Config, err error) {
-
 	_, err := toml.DecodeFile(flagConfigFile, &config)
 
 	if err != nil {
