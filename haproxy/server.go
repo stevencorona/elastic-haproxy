@@ -31,9 +31,10 @@ type Server struct {
 }
 
 const BINARYPATH = "/usr/local/bin/haproxy"
+const CONFIGPATH = "config/haproxy.conf"
 
 func (h *Server) createProcess() {
-	h.cmd = exec.Command(BINARYPATH, "-f", "config/haproxy.conf")
+	h.cmd = exec.Command(BINARYPATH, "-f", CONFIGPATH)
 }
 
 func (h *Server) setupStdout() {
@@ -86,7 +87,7 @@ func (h *Server) reloadProcess() error {
 	// Start a new process, telling it to replace the old process
 	// This will signal the current process and tell it shutdown, which is why
 	// we don't need to do it here.
-	cmd := exec.Command(BINARYPATH, "-f", "config/haproxy.conf", "-sf", pid)
+	cmd := exec.Command(BINARYPATH, "-f", CONFIGPATH, "-sf", pid)
 
 	// Start the new process and check for errors. We bail out if there is
 	// an error and DON'T replace the old process.
