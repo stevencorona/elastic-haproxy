@@ -77,7 +77,6 @@ func (h *Server) Start(notify chan Event, action chan Action) {
 }
 
 func (h *Server) reloadProcess() error {
-
 	h.Lock()
 
 	// Grab pid of current running process
