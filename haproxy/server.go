@@ -62,6 +62,9 @@ func (h *Server) Start(notify chan Event, action chan Action) {
 	h.ActionChan = action
 	h.Unlock()
 
+	// TODO: Do something to verify that the process has started,
+	// is alive, taking request, etc. Almost need a health check
+	// passed type of thing.
 	notify <- HasStarted
 
 	// Wait for a stop signal, reload signal, or process death
