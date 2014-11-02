@@ -12,12 +12,14 @@ import (
 type Event int
 type Action int
 
+// Events that can be fired from the event channel
 const (
 	HasStarted Event = 1 << iota
 	HasStopped
 	HasReloaded
 )
 
+// Actions that can be received from the action channel
 const (
 	WantsReload Action = 1 << iota
 	WantsStop
