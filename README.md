@@ -23,8 +23,6 @@ It is completely out-of-band from the request cycle and uses the stock HAProxy b
 
 Zero downtime reconfigurations are accomplished using the `-sf` trick and (if on linux) some iptables magic.
 
-Multi-node configuration is handled via ZooKeeper (or possibly etcd).
-
 ## Coming in the future
 
 * Mesos framework+executor!
