@@ -22,7 +22,3 @@ The main method of implementation is to wrap the HAProxy binary and execute it f
 It is completely out-of-band from the request cycle and uses the stock HAProxy build.
 
 Zero downtime reconfigurations are accomplished using the `-sf` trick and (if on linux) some iptables magic.
-
-## Coming in the future
-
-* Mesos framework+executor!
