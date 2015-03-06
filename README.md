@@ -10,6 +10,7 @@ Amazon ELB is awesome. It's cheap and easy to get started with, but can be limit
 * Multi-node coordination, scale out to N load balancers
 * Etcd, Route53, and Docker support
 * Angular dashboard with full control
+* Zero-downtime configuration
 
 All of this is done outside of the HAProxy code path, so it still maintains the high performance that comes baked in with HAProxy. Think of Elastic HAProxy as a bolt-on to HAProxy, running in it's own isolated process.
 
